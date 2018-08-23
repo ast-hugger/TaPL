@@ -1,11 +1,12 @@
 package tapl.ch7
 
-import tapl.base.ClassicLambdaCalculus
-import tapl.base.ClassicLambdaCalculus._
+import tapl.base.ClassicalLambdaCalculus
+import tapl.base.ClassicalLambdaCalculus.{Var, Term, eval1}
 
 object Main extends App {
 
-  val lambda: String => (Variable => Term) => Term = ClassicLambdaCalculus.lambda
+  //noinspection ScalaUnnecessaryParentheses -- parentheses are necessary here
+  val lambda: String => (Var => Term) => Term = ClassicalLambdaCalculus.lambda
 
   /*
     Church booleans and naturals:
@@ -30,7 +31,7 @@ object Main extends App {
   val cor = lambda("v") { v => lambda("w") { w => v(ctrue)(w) } }
 
   val czero = lambda("s") { s => lambda("z") { z => z } }
-  val csucc = lambda("n") { n => lambda("s") { s => lambda("z") { z => s(z) } } }
+  val csucc = lambda("n") { n => lambda("s") { s => lambda("z") { z => s(n(s)(z)) } } }
   val ciszero = lambda("n") { n => n(lambda("x") { x => cfalse })(ctrue) }
 
   display("false", cfalse)
@@ -51,6 +52,7 @@ object Main extends App {
   display("succ(zero)", csucc(czero))
   display("iszero(zero)", ciszero(czero))
   display("iszero(succ(zero))", ciszero(csucc(czero)))
+  display("iszero(succ(succ(zero)))", ciszero(csucc(csucc(czero))))
 
   private def display(label: String, term: Term): Unit = {
     println(label)
@@ -59,11 +61,10 @@ object Main extends App {
 
   private def printReductions(term: Term): Unit = {
     println(term)
-    ClassicLambdaCalculus.eval1(term) match {
-      case Some(result) => {
+    eval1(term) match {
+      case Some(result) =>
         println(s"    => $result")
         printReductions(result)
-      }
       case _ => println()
     }
   }
