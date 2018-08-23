@@ -74,6 +74,7 @@ object Main {
     printTypeOf(lambda("b", TBool) { b => b })
     printTypeOf(lambda("b", TBool) { b => tif(b, int(1), int(0)) })
     printTypeOf(lambda("b", TInt) { b => tif(b, int(1), int(0)) })
+    printTypeOf(lambda("b", TBool) { b => tif(b, ttrue, int(0)) })
     printTypeOf(lambda("b", TBool) { b => tif(b, int(1), int(0)) } (ttrue))
     printTypeOf(lambda("b", TBool) { b => tif(b, int(1), int(0)) } (int(42)))
     printTypeOf(let("a", int(42)) { a => lambda("x", TBool) { x => a }})
