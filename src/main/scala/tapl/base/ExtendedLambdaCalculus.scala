@@ -40,6 +40,7 @@ object ExtendedLambdaCalculus {
       If(guard.rewriteUsing(mapping),
         trueBranch.rewriteUsing(mapping),
         falseBranch.rewriteUsing(mapping))
+
     override def toString: String = s"if ($guard) then $trueBranch else $falseBranch"
   }
 
@@ -59,5 +60,17 @@ object ExtendedLambdaCalculus {
   def let(name: String, init: Term)(body: Var => Term): Let = {
     val variable = Var(name)
     Let(variable, init, body(variable))
+  }
+
+  def eval1(term: Term): Option[Term] = term match {
+    case App(Abs(v, body), arg) if arg.isValue => Some(body.rewriteUsing(Map(v -> arg)))
+    case App(f, arg) if f.isValue => eval1(arg).map(App(f, _))
+    case App(f, arg) => eval1(f).map(App(_, arg))
+    case If(BoolLiteral(true), tb, _) => Some(tb)
+    case If(BoolLiteral(false), _, fb) => Some(fb)
+    case If(x, tb, fb) if !x.isValue => eval1(x).map(If(_, tb, fb))
+    case Let(v, init, body) if init.isValue => Some(body.rewriteUsing(Map(v -> init)))
+    case Let(v, init, body) => eval1(init).map(If(v, _, body))
+    case _ => None
   }
 }
