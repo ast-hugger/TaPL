@@ -106,19 +106,23 @@ object Main {
     printTypeOf(intFun)
     printTypeOf(aFun)
     printTypeOf(uncallableFun)
-    println("projections")
+    header("projections")
     printTypeOf(Project(c, "one"))
     printTypeOf(Project(c, "two"))
-    println("applications")
+    header("applications")
     printTypeOf(anyFun(a))
     printTypeOf(anyFun(Project(a, "one")))
     printTypeOf(intFun(Project(a, "one")))
     printTypeOf(aFun(a))
     printTypeOf(aFun(c))
-    println("error cases")
+    header("error cases")
     printTypeOf(aFun(b))
     printTypeOf(Project(a, "bogus"))
     printTypeOf(intFun(Project(a, "two")))
     printTypeOf(uncallableFun(a))
+  }
+
+  private def header(text: String): Unit = {
+    println("  " + text)
   }
 }

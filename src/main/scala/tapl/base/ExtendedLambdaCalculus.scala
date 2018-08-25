@@ -2,7 +2,7 @@ package tapl.base
 
 object ExtendedLambdaCalculus {
 
-  object traits extends Terms[Term]
+  object traits extends Terms{ type T = Term }
 
   /**
     * Not sealed so we can extend further.

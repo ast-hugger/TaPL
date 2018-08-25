@@ -1,7 +1,7 @@
 package tapl.ch7
 
 import tapl.base.ClassicalLambdaCalculus
-import tapl.base.ClassicalLambdaCalculus.{Var, Term, eval1}
+import tapl.base.ClassicalLambdaCalculus.{Var, Term, eval1withSubst}
 
 object Main extends App {
 
@@ -23,16 +23,16 @@ object Main extends App {
     iszero = λn. n (λx. cfalse) ctrue
    */
 
-  val ctrue = lambda("t") { t => lambda("f") { f => t } }
-  val cfalse = lambda("t") { t => lambda("f") { f => f } }
+  def ctrue: Term = lambda("t") { t => lambda("f") { f => t } }.replicate
+  def cfalse: Term = lambda("t") { t => lambda("f") { f => f } }.replicate
 
-  val cnot = lambda("v") { v => v(cfalse)(ctrue) }
-  val cand = lambda("v") { v => lambda("w") { w => v(w)(cfalse) } }
-  val cor = lambda("v") { v => lambda("w") { w => v(ctrue)(w) } }
+  def cnot: Term = lambda("v") { v => v(cfalse)(ctrue) }.replicate
+  def cand: Term = lambda("v") { v => lambda("w") { w => v(w)(cfalse) } }.replicate
+  def cor: Term = lambda("v") { v => lambda("w") { w => v(ctrue)(w) } }.replicate
 
-  val czero = lambda("s") { s => lambda("z") { z => z } }
-  val csucc = lambda("n") { n => lambda("s") { s => lambda("z") { z => s(n(s)(z)) } } }
-  val ciszero = lambda("n") { n => n(lambda("x") { x => cfalse })(ctrue) }
+  def czero: Term = lambda("s") { s => lambda("z") { z => z } }.replicate
+  def csucc: Term = lambda("n") { n => lambda("s") { s => lambda("z") { z => s(n(s)(z)) } } }.replicate
+  def ciszero: Term = lambda("n") { n => n(lambda("x") { x => cfalse })(ctrue) }.replicate
 
   display("false", cfalse)
   display("not(true)", cnot(ctrue))
@@ -61,9 +61,9 @@ object Main extends App {
 
   private def printReductions(term: Term): Unit = {
     println(term)
-    eval1(term) match {
-      case Some(result) =>
-        println(s"    => $result")
+    eval1withSubst(term) match {
+      case Some((result, v, subst)) =>
+        println(term.toUnderlining(Map(v -> '^', subst -> '-')))
         printReductions(result)
       case _ => println()
     }

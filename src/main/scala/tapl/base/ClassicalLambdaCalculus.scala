@@ -1,10 +1,16 @@
 package tapl.base
 
 object ClassicalLambdaCalculus {
-  object Traits extends Terms[Term]
+  object Traits extends Terms { type T = Term }
 
   sealed abstract class Term extends Traits.Rewritable {
     def apply(arg: Term): Term = App(this, arg)
+
+    /** Structural equality is not what we need. */
+    override def equals(obj: scala.Any): Boolean = obj match {
+      case that: Term => this eq that
+      case _ => false
+    }
   }
 
   case class Var(name: String) extends Term with Traits.Var {
@@ -32,6 +38,14 @@ object ClassicalLambdaCalculus {
     case App(Abs(v, body), arg) if arg.isValue => Some(body.rewriteUsing(Map(v -> arg)))
     case App(f, arg) if f.isValue => eval1(arg).map(App(f, _))
     case App(f, arg) => eval1(f).map(App(_, arg))
+    case _ => None
+  }
+
+  /** Same as [[eval1]] but include into the result the substituted variable and term.  */
+  def eval1withSubst(term: Term): Option[(Term, Var, Term)] = term match {
+    case App(Abs(v, body), arg) if arg.isValue => Some((body.rewriteUsing(Map(v -> arg)), v, arg))
+    case App(f, arg) if f.isValue => eval1withSubst(arg).map { case (r, v, s) => (App(f, r), v, s) }
+    case App(f, arg) => eval1withSubst(f).map { case (r, v, s) => (App(r, arg), v, s) }
     case _ => None
   }
 }
