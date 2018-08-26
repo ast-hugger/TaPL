@@ -2,7 +2,6 @@ package tapl.ch17
 
 import tapl.base.ExtendedLambdaCalculus
 import tapl.base.ExtendedLambdaCalculus.{Abs, Term, Var, traits}
-import tapl.base.Util._
 
 /**
   * Extended lambda calculus from the base further augmented with records.
@@ -13,7 +12,7 @@ object AugmentedCalculus {
   case class Record(fields: Vector[(String, Term)]) extends Term {
     override def replicateUsing(mapping: traits.Mapping): Term =
       Record(fields.map { case (s, t) => (s, t.rewriteUsing(mapping))} )
-    override def toString: String = "{" + mapAndJoin(fields)(p => p._1 + " -> " + p._2) { _ + ", " + _ } + "}"
+    override def toString: String = "{" + fields.map(p => p._1 + " -> " + p._2).mkString(", ") + "}"
   }
 
   case class Project(record: Term, field: String) extends Term {

@@ -30,7 +30,7 @@ object Main {
     case Record(fields) =>
       val fieldNames = fields.map(_._1)
       val fieldTypes = fields.map(p => typeOf(p._2, context))
-      allRightsOrLeft(fieldTypes).map(fieldNames zip _).map(TRecord)
+      Util.allRightsOrLeft(fieldTypes).map(fieldNames zip _).map(TRecord)
 
     case Project(record, field) =>
       typeOf(record, context) match {
@@ -57,20 +57,6 @@ object Main {
       }
 
     case _ => Left(s"unrecognized term $term")
-  }
-
-  /**
-    * Convert a collection of [[Either]]s into an Either which, if all elements
-    * of the original collection are [[Right]]s, is a Right with a list of their
-    * values. Otherwise, return a [[Left]] with the first encountered Left.
-    */
-  private def allRightsOrLeft[A, B](xs: Iterable[Either[A, B]]): Either[A, Iterable[B]] = {
-    val either = xs.foldLeft(Right(Nil): Either[A, List[B]]) {
-      case (Right(res), Right(x)) => Right(x :: res)
-      case (Right(_), Left(err)) => Left(err)
-      case (Left(err), _) => Left(err)
-    }
-    either.map(_.reverse)
   }
 
   def printTypeOf(term: Term): Unit = {

@@ -5,12 +5,6 @@ object ClassicalLambdaCalculus {
 
   sealed abstract class Term extends Traits.Rewritable {
     def apply(arg: Term): Term = App(this, arg)
-
-    /** Structural equality is not what we need. */
-    override def equals(obj: scala.Any): Boolean = obj match {
-      case that: Term => this eq that
-      case _ => false
-    }
   }
 
   case class Var(name: String) extends Term with Traits.Var {
