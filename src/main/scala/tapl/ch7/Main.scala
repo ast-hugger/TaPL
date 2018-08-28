@@ -9,7 +9,7 @@ object Main extends App {
   val lambda: String => (Var => Term) => Term = ClassicalLambdaCalculus.lambda
 
   /*
-    Church booleans and naturals:
+    Church booleans and numerals:
 
     true = λt. λf. t
     false = λt. λf. f
@@ -21,6 +21,10 @@ object Main extends App {
     zero = λs. λz. z
     succ = λn. λs. λz. s (n s z)
     iszero = λn. n (λx. cfalse) ctrue
+
+    Each definition is a replica because we rely on term identity to keep track
+    of variable bindings, so any abstraction must be replicated before we can
+    use it in an expression.
    */
 
   def ctrue: Term = lambda("t") { t => lambda("f") { f => t } }.replicate

@@ -3,4 +3,6 @@ B. Pierce's _Types and Programming Languages_.
 
  * Chapter 7: Untyped lambda calculus
  * Chapter 10: Simply typed lambda calculus
- * Chapter 17: Simply typed lambda calculus with subtyping
+ * Chapter 17: Subtyping
+ * Chapter 22: Type reconstruction
+ 

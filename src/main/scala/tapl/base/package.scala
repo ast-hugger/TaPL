@@ -1,6 +1,6 @@
-package tapl.base
+package tapl
 
-object Util {
+package object base {
 
   /**
     * Convert a collection of [[Either]]s into an Either which, if all elements

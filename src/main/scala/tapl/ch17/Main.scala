@@ -30,7 +30,7 @@ object Main {
     case Record(fields) =>
       val fieldNames = fields.map(_._1)
       val fieldTypes = fields.map(p => typeOf(p._2, context))
-      Util.allRightsOrLeft(fieldTypes).map(fieldNames zip _).map(TRecord)
+      allRightsOrLeft(fieldTypes).map(fieldNames zip _).map(TRecord)
 
     case Project(record, field) =>
       typeOf(record, context) match {

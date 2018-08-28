@@ -5,6 +5,16 @@ object ClassicalLambdaCalculus {
 
   sealed abstract class Term extends Traits.Rewritable {
     def apply(arg: Term): Term = App(this, arg)
+
+    /**
+      * Perhaps unusually, we actually want the reference equality back.
+      */
+    override def equals(obj: scala.Any): Boolean = obj match {
+      case that: Term => this eq that
+      case _ => false
+    }
+
+    override def hashCode(): Int = System.identityHashCode(this)
   }
 
   case class Var(name: String) extends Term with Traits.Var {

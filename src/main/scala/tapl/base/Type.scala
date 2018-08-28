@@ -1,5 +1,3 @@
 package tapl.base
 
-abstract class Type {
-
-}
+abstract class Type
