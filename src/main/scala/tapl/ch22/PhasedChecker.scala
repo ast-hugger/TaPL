@@ -68,8 +68,7 @@ object PhasedChecker {
   private def applySubst(t: Type, ss: List[Substitution]) = ss.foldLeft(t)((t, s) => subst(t, s._1, s._2))
 
   /**
-    * Create a typed abstraction from typeless syntax,
-    * with a fresh type variable as the type.
+    * Create a typed abstraction from typeless syntax, with a fresh type variable as the type.
     */
   private def lambda(varName: String)(bodyGen: Var => Term): Term = TypedAbs.lambda(varName, TVar.generate())(bodyGen)
 
@@ -78,6 +77,9 @@ object PhasedChecker {
     printTypeAndConstraintsOf(lambda("a") { a => Succ(a) })
     printTypeAndConstraintsOf(lambda("a") { a => IsZero(a) })
     printTypeAndConstraintsOf(lambda("b") { b => lambda("n") { n => If(b, n, Succ(n)) } })
+    printTypeAndConstraintsOf(lambda("x") { x => lambda("y") { y =>  lambda("z") { z => x(z)(y(z)) } } }) // exercise 22.5.2
+    printTypeAndConstraintsOf(lambda("z") { z => lambda("y") { y => z(y(BoolLiteral(true))) }})
+    printTypeAndConstraintsOf(lambda("w") { w => If(BoolLiteral(true), BoolLiteral(false), w(BoolLiteral(false)))})
   }
 
   private def printTypeAndConstraintsOf(expr: Term): Unit = {
